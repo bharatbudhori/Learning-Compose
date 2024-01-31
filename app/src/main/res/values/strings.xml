@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Unit Converter</string>
+    <string name="title_activity_shopping">ShoppingActivity</string>
+    <string name="title_activity_unit_converter">UnitConverter</string>
 </resources>
