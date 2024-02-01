@@ -9,9 +9,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.unitconverter.screens.CounterApp
 import com.example.unitconverter.screens.ShoppingList
 import com.example.unitconverter.screens.UnitConverter
 import com.example.unitconverter.ui.theme.UnitConverterTheme
@@ -37,6 +39,7 @@ class MainActivity : ComponentActivity() {
 fun ScreenMain() {
 
     val navController = rememberNavController()
+    val viewModel: CounterViewModel = viewModel()
 
     NavHost(navController = navController, startDestination = Routes.Home.route) {
 
@@ -48,6 +51,11 @@ fun ScreenMain() {
         // Another Route : Shopping List
         composable(Routes.ShoppingList.route) {
             ShoppingList(navController = navController)
+        }
+
+        // Another Route : Counter App
+        composable(Routes.CounterApp.route) {
+            CounterApp(viewModel)
         }
     }
 }
