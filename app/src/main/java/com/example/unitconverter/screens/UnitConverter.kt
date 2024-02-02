@@ -213,6 +213,16 @@ fun UnitConverter(navController: NavHostController) {
             Text(text = "Counter App")
         }
 
+        Spacer(modifier = Modifier.height(36.dp))
+
+        //button to navigate to the shopping list
+        Button(onClick = {
+            //navigate to the profile screen
+            navController.navigate(Routes.MealApp.route)
+        }) {
+            Text(text = "Recipe App")
+        }
+
     }
 }
 

@@ -57,5 +57,9 @@ fun ScreenMain() {
         composable(Routes.CounterApp.route) {
             CounterApp(viewModel)
         }
+
+        composable(Routes.MealApp.route){
+            RecipeScreen()
+        }
     }
 }
