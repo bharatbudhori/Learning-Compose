@@ -218,7 +218,7 @@ fun UnitConverter(navController: NavHostController) {
         //button to navigate to the shopping list
         Button(onClick = {
             //navigate to the profile screen
-            navController.navigate(Routes.MealApp.route)
+            navController.navigate(Routes.RecipeApp.route)
         }) {
             Text(text = "Recipe App")
         }

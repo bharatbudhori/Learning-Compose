@@ -1,4 +1,4 @@
-package com.example.unitconverter
+package com.example.unitconverter.models
 
 data class CounterModel(var count : Int)
 

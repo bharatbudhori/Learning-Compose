@@ -1,8 +1,9 @@
-package com.example.unitconverter
+package com.example.unitconverter.viewModels
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.example.unitconverter.models.CounterRepository
 
 class CounterViewModel() : ViewModel() {
     private val _repository: CounterRepository = CounterRepository()

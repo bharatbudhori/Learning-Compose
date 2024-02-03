@@ -21,7 +21,7 @@ import androidx.navigation.NavHostController
 import com.example.unitconverter.Routes
 
 @Composable
-fun ShoppingList(navController: NavHostController) {
+fun ShoppingList() {
 
 
     Surface(

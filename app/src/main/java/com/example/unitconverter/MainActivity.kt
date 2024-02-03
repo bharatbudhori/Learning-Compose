@@ -7,16 +7,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.unitconverter.models.Category
+import com.example.unitconverter.screens.CategoryDetailScreen
 import com.example.unitconverter.screens.CounterApp
+import com.example.unitconverter.screens.RecipeScreen
 import com.example.unitconverter.screens.ShoppingList
 import com.example.unitconverter.screens.UnitConverter
 import com.example.unitconverter.ui.theme.UnitConverterTheme
+import com.example.unitconverter.viewModels.CounterViewModel
+import com.example.unitconverter.viewModels.MainViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,6 +45,8 @@ fun ScreenMain() {
 
     val navController = rememberNavController()
     val viewModel: CounterViewModel = viewModel()
+    val recipeViewModel: MainViewModel = viewModel()
+    val viewState by recipeViewModel.categoriesState
 
     NavHost(navController = navController, startDestination = Routes.Home.route) {
 
@@ -50,7 +57,7 @@ fun ScreenMain() {
 
         // Another Route : Shopping List
         composable(Routes.ShoppingList.route) {
-            ShoppingList(navController = navController)
+            ShoppingList()
         }
 
         // Another Route : Counter App
@@ -58,8 +65,18 @@ fun ScreenMain() {
             CounterApp(viewModel)
         }
 
-        composable(Routes.MealApp.route){
-            RecipeScreen()
+        // Another Route : Recipe App
+        composable(Routes.RecipeApp.route) {
+            RecipeScreen(navController = navController, viewState = viewState)
         }
+
+        // Another Route : Recipe Detail
+        composable(Routes.RecipeDetail.route) {
+            val category =
+                navController.previousBackStackEntry?.savedStateHandle?.get<Category>("category")
+                    ?: Category("", "", "", "")
+            CategoryDetailScreen(category)
+        }
+
     }
 }

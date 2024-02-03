@@ -1,11 +1,12 @@
-package com.example.unitconverter
+package com.example.unitconverter.viewModels
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.unitconverter.models.Category
+import com.example.unitconverter.services.recipeService
 import kotlinx.coroutines.launch
-import okhttp3.internal.wait
 
 class MainViewModel : ViewModel(){
 
