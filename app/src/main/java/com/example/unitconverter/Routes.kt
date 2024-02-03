@@ -6,4 +6,5 @@ sealed class Routes(val route: String) {
     object CounterApp : Routes("counterApp")
     object RecipeApp : Routes("mealApp")
     object RecipeDetail : Routes("recipeDetail")
+    object LocationScreen : Routes("locationScreen")
 }

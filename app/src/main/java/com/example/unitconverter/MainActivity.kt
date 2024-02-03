@@ -16,11 +16,13 @@ import androidx.navigation.compose.rememberNavController
 import com.example.unitconverter.models.Category
 import com.example.unitconverter.screens.CategoryDetailScreen
 import com.example.unitconverter.screens.CounterApp
+import com.example.unitconverter.screens.LocationScreen
 import com.example.unitconverter.screens.RecipeScreen
 import com.example.unitconverter.screens.ShoppingList
 import com.example.unitconverter.screens.UnitConverter
 import com.example.unitconverter.ui.theme.UnitConverterTheme
 import com.example.unitconverter.viewModels.CounterViewModel
+import com.example.unitconverter.viewModels.LocationViewModel
 import com.example.unitconverter.viewModels.MainViewModel
 
 class MainActivity : ComponentActivity() {
@@ -45,6 +47,7 @@ fun ScreenMain() {
 
     val navController = rememberNavController()
     val viewModel: CounterViewModel = viewModel()
+    val locationViewModel: LocationViewModel = viewModel()
     val recipeViewModel: MainViewModel = viewModel()
     val viewState by recipeViewModel.categoriesState
 
@@ -76,6 +79,11 @@ fun ScreenMain() {
                 navController.previousBackStackEntry?.savedStateHandle?.get<Category>("category")
                     ?: Category("", "", "", "")
             CategoryDetailScreen(category)
+        }
+
+        // Another Route : Location Screen
+        composable(Routes.LocationScreen.route) {
+            LocationScreen(locationViewModel)
         }
 
     }
