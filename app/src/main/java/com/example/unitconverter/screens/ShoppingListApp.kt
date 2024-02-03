@@ -41,7 +41,8 @@ data class ShoppingItem(
     var name: String,
     val id: Int,
     var quantity: Int,
-    var isEditing: Boolean = false
+    var isEditing: Boolean = false,
+    var address: String = ""
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -227,7 +228,7 @@ fun ShoppingListItem(
     ) {
         Text(text = item.name, modifier = Modifier.padding(8.dp))
         Text(text = "Qty: ${item.quantity}", modifier = Modifier.padding(8.dp))
-//        Spacer(Modifier.fillMaxWidth())
+
         Row(
             modifier = Modifier.padding(8.dp)
         ) {
