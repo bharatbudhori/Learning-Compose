@@ -1,5 +1,10 @@
 package com.example.unitconverter.screens
 
+import android.Manifest
+import android.content.Context
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -19,6 +24,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,6 +41,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
+import androidx.navigation.NavController
+import com.example.unitconverter.MainActivity
+import com.example.unitconverter.Routes
+import com.example.unitconverter.services.LocationUtils
+import com.example.unitconverter.viewModels.LocationViewModel
+import okhttp3.Route
 
 
 data class ShoppingItem(
@@ -47,11 +60,51 @@ data class ShoppingItem(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShoppingListApp() {
+fun ShoppingListApp(
+    locationUtils: LocationUtils,
+    viewModel: LocationViewModel,
+    navController: NavController,
+    context: Context,
+    address: String
+) {
     var sItems by remember { mutableStateOf(listOf<ShoppingItem>()) }
     var showDialog by remember { mutableStateOf(false) }
     var itemName by remember { mutableStateOf("") }
     var itemQuantity by remember { mutableStateOf("") }
+
+    val requestPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions(),
+        onResult = { permissions ->
+            if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true
+                &&
+                permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+            ) {
+                // Permission granted, update location
+            } else {
+                val rationalRequired = ActivityCompat.shouldShowRequestPermissionRationale(
+                    context as MainActivity,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) || ActivityCompat.shouldShowRequestPermissionRationale(
+                    context as MainActivity,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
+
+                if (rationalRequired) {
+                    Toast.makeText(
+                        context,
+                        "Location permission required for this feature",
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    Toast.makeText(
+                        context,
+                        "Location permission denied, go to settings to grant access",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+    )
 
 
     Column(
@@ -83,6 +136,7 @@ fun ShoppingListApp() {
                             editedItem?.let {
                                 it.name = editedName
                                 it.quantity = editedQuantity
+                                it.address = address
                             }
 
                         },
@@ -130,6 +184,24 @@ fun ShoppingListApp() {
                             Text(text = "Item Quantity")
                         }
                     )
+
+                    Button(onClick = {
+                        if (locationUtils.hasLocationPermission(context)) {
+                            locationUtils.requestLocationUpdates(viewModel)
+                            navController.navigate(Routes.MapsScreen.route) {
+                                this.launchSingleTop
+                            }
+                        } else {
+                            requestPermissionLauncher.launch(
+                                arrayOf(
+                                    Manifest.permission.ACCESS_FINE_LOCATION,
+                                    Manifest.permission.ACCESS_COARSE_LOCATION
+                                )
+                            )
+                        }
+                    }) {
+                       Text(text = "Address")
+                    }
                 }
 
             },
@@ -149,6 +221,7 @@ fun ShoppingListApp() {
                                 id = sItems.size + 1,
                                 name = itemName,
                                 quantity = itemQuantity.toIntOrNull() ?: 1,
+                                address = address
                             )
 
                             sItems = sItems + newItem
@@ -224,10 +297,23 @@ fun ShoppingListItem(
                 ),
                 shape = RoundedCornerShape(20)
             ),
-            horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = item.name, modifier = Modifier.padding(8.dp))
-        Text(text = "Qty: ${item.quantity}", modifier = Modifier.padding(8.dp))
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(8.dp)
+        ) {
+            Row {
+                Text(text = item.name, modifier = Modifier.padding(8.dp))
+                Text(text = "Qty: ${item.quantity}", modifier = Modifier.padding(8.dp))
+            }
+            Row(modifier = Modifier.fillMaxWidth()) {
+                Icon(imageVector = Icons.Default.LocationOn, contentDescription = null)
+                Text(text = item.address)
+            }
+        }
+
 
         Row(
             modifier = Modifier.padding(8.dp)

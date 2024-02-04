@@ -12,11 +12,13 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import com.example.unitconverter.models.Category
 import com.example.unitconverter.screens.CategoryDetailScreen
 import com.example.unitconverter.screens.CounterApp
 import com.example.unitconverter.screens.LocationScreen
+import com.example.unitconverter.screens.LocationSelectionScreen
 import com.example.unitconverter.screens.RecipeScreen
 import com.example.unitconverter.screens.ShoppingList
 import com.example.unitconverter.screens.UnitConverter
@@ -60,7 +62,7 @@ fun ScreenMain() {
 
         // Another Route : Shopping List
         composable(Routes.ShoppingList.route) {
-            ShoppingList()
+            ShoppingList(navController = navController, viewModel = locationViewModel)
         }
 
         // Another Route : Counter App
@@ -84,6 +86,16 @@ fun ScreenMain() {
         // Another Route : Location Screen
         composable(Routes.LocationScreen.route) {
             LocationScreen(locationViewModel)
+        }
+
+        // Another Route : Map Screen
+        dialog(Routes.MapsScreen.route) { backstack ->
+            locationViewModel.location.value?.let {
+                LocationSelectionScreen(location = it, onLocationSelected = { locationData ->
+                    locationViewModel.fetchAddress("${locationData.latitude},${locationData.longitude}")
+                    navController.popBackStack()
+                })
+            }
         }
 
     }
